@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: true
+  vars:
+    update_packages: True
+  tasks:
+    - name: Install MySQL Client
+      apt: name=mysql-client state=present

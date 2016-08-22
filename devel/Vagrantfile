@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.ssh.insert_key = false
+    config.vm.network "private_network", ip: "192.168.11.42"
+    config.vm.synced_folder "./../", "/development", create: true
+
+    # avoid tty warning on ubuntu
+    config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+    #config.vm.provision "shell", inline: "sudo apt-get upgrade -y python && sudo apt-get install -y python-pip python-dev openssl libssl-dev && pip install --upgrade pip setuptools && pip install ansible"
+    config.vm.define "devel" do |devel|
+        devel.vm.box = "ubuntu/wily64"
+        devel.vm.provision "shell", inline: "sudo apt-get upgrade -y python && \
+                                             sudo apt-get install -y python-pip python-dev openssl libssl-dev && \
+                                             sudo apt-get install -y software-properties-common && \
+                                             sudo apt-add-repository -y ppa:ansible/ansible && \
+                                             sudo apt-get update -y && \
+                                             sudo apt-get install -y ansible"
+        devel.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "playbook.yml"
+            ansible.install  = true
+        end
+    end
+
+    config.vm.define "database-01" do |db|
+        db.vm.box = "gentux/docker-vagrant"
+        db.vm.network "private_network", ip: "192.168.12.42"
+        db.vm.provision :shell, inline: "sudo apt-get update && apt-get install -y mysql-client-core-5.6"
+        db.vm.provision :shell, inline: <<-SHELL
+            cd /development/devel
+            docker build --no-cache -t database-01 -f docker/database01.dockerfile ./
+            docker run -i -d -p 3306:3306 database-01
+        SHELL
+        db.vm.provision :shell, path: "hydrate.sh"
+    end
+
+    config.vm.define "database-02" do |db|
+        db.vm.box = "gentux/docker-vagrant"
+        db.vm.network "private_network", ip: "192.168.13.42"
+        db.vm.provision :shell, inline: <<-SHELL
+            cd /development/devel
+            docker build --no-cache -t database-02 -f docker/database02.dockerfile ./
+            docker run -i -d -p 3306:3306 database-02
+        SHELL
+    end
+end

@@ -1,0 +1,1 @@
+{"virtualbox":{"/development":{"mount_options":["dmode=777","fmode=777"],"guestpath":"/development","hostpath":"/Users/larkmullins/Development/cloudsql-to-rds","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/larkmullins/Development/cloudsql-to-rds/devel","disabled":false,"__vagrantfile":true}}}

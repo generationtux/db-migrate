@@ -1,0 +1,20 @@
+db01:
+    image: mysql:5.6
+    net: host
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: cloudmigrate-1
+        MYSQL_USER: cm1
+        MYSQL_PASSWORD: secret
+    ports:
+        - 3306:3306
+db02:
+    image: mysql:5.6
+    net: host
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: cloudmigrate-2
+        MYSQL_USER: cm2
+        MYSQL_PASSWORD: secret
+    ports:
+        - 3306:3306

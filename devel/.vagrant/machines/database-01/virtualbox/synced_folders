@@ -1,0 +1,1 @@
+{"virtualbox":{"/development":{"create":true,"guestpath":"/development","hostpath":"/Users/larkmullins/Development/db-migrate","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/larkmullins/Development/db-migrate/devel","disabled":false,"__vagrantfile":true}}}
